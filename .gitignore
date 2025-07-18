@@ -1,1 +1,2 @@
-.log
+# Ignore all log files
+*.log
