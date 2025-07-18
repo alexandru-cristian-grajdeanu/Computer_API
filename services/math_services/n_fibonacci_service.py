@@ -1,4 +1,4 @@
-def compute_fibonacci(n: int) -> int:
+def compute_fibonacci(n: int) -> int | str:
     if n == 0:
         return 0
     elif n == 1:
@@ -6,4 +6,8 @@ def compute_fibonacci(n: int) -> int:
     a, b = 0, 1
     for _ in range(2, n + 1):
         a, b = b, a + b
-    return b
+    if b > 10**200:
+        return str(b)
+    else:
+        return b
+

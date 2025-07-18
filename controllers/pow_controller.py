@@ -5,7 +5,7 @@ from db import get_session
 from schemas.math_schemas.pow_schema import PowRequest
 from schemas.response_schema import OperationResponse
 from services.db_service import save_operation
-from services.pow_service import compute_pow
+from services.math_services.pow_service import compute_pow
 from logger import logger
 
 router = APIRouter()

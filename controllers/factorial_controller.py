@@ -3,13 +3,9 @@ from sqlmodel import Session
 
 from db import get_session
 from schemas.math_schemas.factorial_schema import FactorialRequest
-from schemas.math_schemas.fibonacci_schema import FibonacciRequest
-from schemas.math_schemas.pow_schema import PowRequest
 from schemas.response_schema import OperationResponse
 from services.db_service import save_operation
-from services.n_factorial_service import compute_factorial
-from services.n_fibonacci_service import compute_fibonacci
-from services.pow_service import compute_pow
+from services.math_services.n_factorial_service import compute_factorial
 from logger import logger
 
 router = APIRouter()

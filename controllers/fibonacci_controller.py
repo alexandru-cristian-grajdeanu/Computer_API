@@ -5,7 +5,7 @@ from db import get_session
 from schemas.math_schemas.fibonacci_schema import FibonacciRequest
 from schemas.response_schema import OperationResponse
 from services.db_service import save_operation
-from services.n_fibonacci_service import compute_fibonacci
+from services.math_services.n_fibonacci_service import compute_fibonacci
 from logger import logger
 
 router = APIRouter()
