@@ -3,10 +3,11 @@ from sqlmodel import Session
 
 from db import get_session
 from schemas.math_schemas.fibonacci_schema import FibonacciRequest
-from schemas.response_schema import OperationResponse
+from schemas.responses_schemas.response_schema import OperationResponse
 from services.db_service import save_operation
 from services.math_services.n_fibonacci_service import compute_fibonacci
 from logger import logger
+from services.utils.jwt_check import verify_jwt
 
 router = APIRouter()
 
@@ -15,7 +16,8 @@ router = APIRouter()
 def fibonacci_endpoint(
         data: FibonacciRequest,
         request: Request,
-        session: Session = Depends(get_session)
+        session: Session = Depends(get_session),
+        token_data: dict = Depends(verify_jwt)
 ):
     try:
         logger.info(f"{request.method} {request.url.path} - n={data.n}")
