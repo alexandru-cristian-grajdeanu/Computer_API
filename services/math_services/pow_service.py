@@ -11,7 +11,8 @@ def compute_pow(base: float, exponent: float) -> float | str:
         raise ValueError("0 cannot be raised to 0 or a negative exponent.")
 
     if base < 0 and not exponent.is_integer():
-        raise ValueError("Negative base with fractional exponent is a complex number.")
+        raise ValueError("Negative base with fractional "
+                         "exponent is a complex number.")
 
     if abs(int(base)) > 1e154 or abs(int(exponent)) > 1e10:
         raise PowTooLargeError("Base or exponent too large to compute safely.")

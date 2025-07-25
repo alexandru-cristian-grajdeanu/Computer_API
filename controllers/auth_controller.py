@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 
 from db import get_session
@@ -12,6 +12,8 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_200_OK
 from logger import logger
 
 router = APIRouter()
+
+
 @router.post("/login", response_model=Token)
 def login(user: UserLogin, session: Session = Depends(get_session)):
     logger.info(f"Login attempt for: {user.email}")

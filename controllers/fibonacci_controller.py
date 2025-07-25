@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, Request, Depends
 from sqlmodel import Session
 
 from db import get_session
@@ -32,7 +32,8 @@ def fibonacci_endpoint(
         result = compute_fibonacci(data.n)
         logger.info(f"FIBONACCI result: {result}")
         save_operation(session, "fibonacci", data.model_dump(), str(result))
-        return OperationResponse(operation="fibonacci", input=data.model_dump(), result=result)
+        return OperationResponse(operation="fibonacci",
+                                 input=data.model_dump(), result=result)
 
     except FibonacciTooLargeError as e:
         logger.error("Fibonacci too large to compute", exc_info=True)
@@ -49,8 +50,10 @@ def fibonacci_endpoint(
         )
 
     except Exception as e:
-        logger.error("Unexpected error during FIBONACCI computation", exc_info=True)
+        logger.error("Unexpected error during FIBONACCI computation",
+                     exc_info=True)
         return JSONResponse(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"code": 500, "message": f"Internal server error: {e}"}
+            content={"code": 500,
+                     "message": f"Internal server error: {e}"}
         )

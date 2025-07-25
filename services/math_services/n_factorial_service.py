@@ -15,12 +15,13 @@ def compute_factorial(n: int) -> int | str:
     if n == 0:
         return 1
 
-    # Estimate number of digits in n!
-    estimated_digits = math.floor(n * math.log10(n / math.e) + math.log10(2 * math.pi * n) / 2)
+    estimated_digits = math.floor(n * math.log10(n / math.e)
+                                  + math.log10(2 * math.pi * n) / 2)
 
     if estimated_digits > 10000:
         raise FactorialTooLargeError(
-            f"Factorial result will exceed {estimated_digits} digits, which is beyond the safe string conversion limit."
+            f"Factorial result will exceed {estimated_digits} "
+            f"digits, which is beyond the safe string conversion limit."
         )
 
     result = 1

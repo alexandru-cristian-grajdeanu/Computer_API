@@ -12,15 +12,18 @@ from logger import logger
 
 router = APIRouter()
 
+
 @router.post("/register")
-def register_controller(user: UserRegister, session: Session = Depends(get_session)):
+def register_controller(user: UserRegister,
+                        session: Session = Depends(get_session)):
     logger.info(f"Attempting to register user: {user.email}")
 
     statement = select(UserAccounts).where(UserAccounts.email == user.email)
     existing = session.exec(statement).first()
 
     if existing:
-        logger.warning(f"Registration failed: email already registered - {user.email}")
+        logger.warning(f"Registration failed:"
+                       f" email already registered - {user.email}")
         return JSONResponse(
             status_code=HTTP_400_BAD_REQUEST,
             content={"code": 400, "message": "Email already registered"}
@@ -33,7 +36,8 @@ def register_controller(user: UserRegister, session: Session = Depends(get_sessi
     session.commit()
     session.refresh(new_user)
 
-    logger.info(f"User registered successfully: {new_user.email} (ID: {new_user.id})")
+    logger.info(f"User registered successfully: "
+                f"{new_user.email} (ID: {new_user.id})")
     return JSONResponse(
         status_code=HTTP_200_OK,
         content={

@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, Request, Depends
 from sqlmodel import Session
 from starlette.responses import JSONResponse
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_413_REQUEST_ENTITY_TOO_LARGE, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import (HTTP_400_BAD_REQUEST,
+                              HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                              HTTP_500_INTERNAL_SERVER_ERROR)
 
 from db import get_session
 from exceptions.PowTooLargeError import PowTooLargeError
@@ -23,11 +25,14 @@ def pow_endpoint(
         token_data: dict = Depends(verify_jwt)
 ):
     try:
-        logger.info(f"{request.method} {request.url.path} - base={data.base}, exponent={data.exponent}")
+        logger.info(f"{request.method} {request.url.path} - "
+                    f"base={data.base}, exponent={data.exponent}")
         result = compute_pow(data.base, data.exponent)
         logger.info(f"POW result: {result}")
         save_operation(session, "pow", data.model_dump(), str(result))
-        return OperationResponse(operation="pow", input=data.model_dump(), result=result)
+        return OperationResponse(operation="pow",
+                                 input=data.model_dump(),
+                                 result=result)
 
     except PowTooLargeError as e:
         logger.warning("Pow too large to compute", exc_info=True)
