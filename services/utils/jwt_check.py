@@ -1,18 +1,14 @@
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import jwt  # PyJWT
-from typing import Dict
-
+import jwt
 from credentials import SECRET_KEY, ALGORITHM
 
 security = HTTPBearer()
 
-def verify_jwt(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> Dict:
+def verify_jwt(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload  # You can also return user info here
+        return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
     except jwt.InvalidTokenError:

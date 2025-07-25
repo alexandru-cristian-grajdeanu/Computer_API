@@ -1,7 +1,16 @@
 from fastapi import APIRouter, HTTPException, Request, Depends
 from sqlmodel import Session
 
+
+from fastapi.responses import JSONResponse
+from starlette.status import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+    HTTP_500_INTERNAL_SERVER_ERROR
+)
+
 from db import get_session
+from exceptions.FactorialTooLargeError import FactorialTooLargeError
 from schemas.math_schemas.factorial_schema import FactorialRequest
 from schemas.responses_schemas.response_schema import OperationResponse
 from services.db_service import save_operation
@@ -27,6 +36,24 @@ def factorial_endpoint(
         logger.info(f"FACTORIAL result: {result}")
         save_operation(session, "factorial", data.model_dump(), str(result))
         return OperationResponse(operation="factorial", input=data.model_dump(), result=result)
+
+    except FactorialTooLargeError as e:
+        logger.error("Factorial too large to compute", exc_info=True)
+        return JSONResponse(
+            status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            content={"code": 413, "message": str(e)}
+        )
+
+    except ValueError as e:
+        logger.warning("Invalid factorial input", exc_info=True)
+        return JSONResponse(
+            status_code=HTTP_400_BAD_REQUEST,
+            content={"code": 400, "message": str(e)}
+        )
+
     except Exception as e:
-        logger.error("Error during FACTORIAL computation", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Internal server error: {e}")
+        logger.error("Unexpected error during FACTORIAL computation", exc_info=True)
+        return JSONResponse(
+            status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"code": 500, "message": f"Internal server error: {e}"}
+        )

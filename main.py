@@ -1,4 +1,7 @@
-from fastapi import FastAPI, HTTPException
+import sys
+
+import uvicorn
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlmodel import SQLModel
@@ -9,6 +12,13 @@ from controllers import factorial_controller, pow_controller, fibonacci_controll
 from logger import logger
 from fastapi import Request
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
+instrumentator = Instrumentator()
+
+
+sys.set_int_max_str_digits(10000)
+
 app = FastAPI()
 app.include_router(fibonacci_controller.router, prefix="/api")
 app.include_router(factorial_controller.router, prefix="/api")
@@ -16,6 +26,7 @@ app.include_router(pow_controller.router, prefix="/api")
 app.include_router(register_controller.router, prefix="/api")
 app.include_router(auth_controller.router, prefix="/api")
 
+instrumentator.instrument(app).expose(app)
 
 @app.on_event("startup")
 def on_startup():
@@ -41,3 +52,7 @@ async def validation_exception_handler(rq: Request,
             "message": "Invalid input"
         },
     )
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
