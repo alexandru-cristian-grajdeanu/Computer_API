@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -24,9 +24,9 @@ def register_controller(user: UserRegister,
     if existing:
         logger.warning(f"Registration failed:"
                        f" email already registered - {user.email}")
-        return JSONResponse(
+        raise HTTPException(
             status_code=HTTP_400_BAD_REQUEST,
-            content={"code": 400, "message": "Email already registered"}
+            detail={"code": 400, "message": "Email already registered"}
         )
 
     hashed_pw = hash_password(user.password)

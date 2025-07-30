@@ -18,7 +18,7 @@ def compute_fibonacci(n: int) -> int | str:
 
     if estimated_digits > 10000:
         raise FibonacciTooLargeError(
-            f"Fibonacci number at index {n} "
+            f"Fibonacci number for n = {n} "
             f"would exceed {estimated_digits} digits."
         )
     a, b = 0, 1

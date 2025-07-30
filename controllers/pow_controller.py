@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, HTTPException
 from sqlmodel import Session
-from starlette.responses import JSONResponse
 from starlette.status import (HTTP_400_BAD_REQUEST,
                               HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                               HTTP_500_INTERNAL_SERVER_ERROR)
@@ -36,21 +35,21 @@ def pow_endpoint(
 
     except PowTooLargeError as e:
         logger.warning("Pow too large to compute", exc_info=True)
-        return JSONResponse(
+        raise HTTPException(
             status_code=HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            content={"code": 413, "message": str(e)}
+            detail={"code": 413, "message": str(e)}
         )
 
     except ValueError as e:
         logger.warning("Invalid input", exc_info=True)
-        return JSONResponse(
+        raise HTTPException(
             status_code=HTTP_400_BAD_REQUEST,
-            content={"code": 400, "message": str(e)}
+            detail={"code": 400, "message": str(e)}
         )
 
     except Exception as e:
         logger.error("Unexpected error during POW computation", exc_info=True)
-        return JSONResponse(
+        raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"code": 500, "message": f"Internal server error: {e}"}
+            detail={"code": 500, "message": f"Internal server error: {e}"}
         )

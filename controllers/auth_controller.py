@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
 from db import get_session
@@ -24,9 +24,9 @@ def login(user: UserLogin, session: Session = Depends(get_session)):
 
     if not db_user or not verify_password(user.password, db_user.password):
         logger.warning(f"Login failed for: {user.email} - Invalid credentials")
-        return JSONResponse(
+        raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
-            content={"code": 401, "message": "Invalid credentials"}
+            detail={"code": 401, "message": "Invalid credentials"}
         )
 
     token_data = {"sub": db_user.email}
