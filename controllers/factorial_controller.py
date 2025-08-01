@@ -49,7 +49,8 @@ def factorial_endpoint(
         )
 
     except Exception as e:
-        logger.error("Unexpected error during FACTORIAL computation", exc_info=True)
+        logger.error("Unexpected error during FACTORIAL computation",
+                     exc_info=True)
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
             detail={"code": 500, "message": f"Internal server error: {e}"}

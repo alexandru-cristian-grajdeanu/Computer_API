@@ -9,7 +9,9 @@ security = HTTPBearer()
 def verify_jwt(credentials: HTTPAuthorizationCredentials =
                Depends(security)) -> dict:
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(credentials.credentials,
+                             SECRET_KEY,
+                             algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
